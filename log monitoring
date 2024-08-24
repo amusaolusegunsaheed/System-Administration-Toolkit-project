@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Function to monitor a log file for a specific pattern
+cd /var/log
+monitor_log() {
+    local logfile="$2"
+    local pattern="$1"
+    
+
+    echo "Monitoring $logfile for pattern: '$pattern'"
+
+    # Ensure the log file exists before starting
+    if [ ! -e "$logfile" ]; then
+        echo "Error: Log file $logfile does not exist."
+        exit 1
+    fi
+
+    # Monitor the log file in real-time and search for the pattern
+    tail -F "$logfile" | grep --line-buffered -i "$pattern"  "$logfile"
+
+}
+
+# Ensure correct number of arguments are provided
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <logfile> <pattern>"
+    exit 1
+fi
+
+# Call the monitor_log function with the provided arguments
+monitor_log "$1" "$2"
